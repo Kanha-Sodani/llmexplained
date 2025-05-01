@@ -86,23 +86,48 @@ print(predict_next(tokens, "the"))  # Output: cat or mat</code></pre>
 
         <p class="text-gray-500 italic">[Diagram of word prediction in a sentence goes here]</p>
       </div>
+
+      <!-- Subsection 1.2 -->
+      <div class="mb-12">
+        <h3 class="text-2xl font-semibold mb-4">1.2 Bag of Words</h3>
+        <p class="mb-6 text-lg leading-relaxed text-gray-700">
+          How do we teach machines to understand text? One simple but powerful idea is the <strong>Bag of Words</strong> method.
+          It turns text into numbers so a machine can use it.
+        </p>
+
+        <div class="border-l-4 border-yellow-600 bg-yellow-50 p-4 rounded mb-6">
+          <p class="font-semibold text-yellow-900 mb-1">Analogy</p>
+          <p class="text-gray-800 leading-relaxed">
+            Imagine each sentence is a shopping basket, and the words are the items inside. A Bag of Words is like counting how many times each item appears. It doesn’t care about order — only what’s in the basket.
+          </p>
+        </div>
+
+        <p class="mb-6 text-lg text-gray-700">
+          Here’s a super simple example:
+        </p>
+
+        <pre><code># Sample text documents
+docs = [
+  "I love movies",
+  "Movies are fun",
+  "I love fun"
+]
+
+from sklearn.feature_extraction.text import CountVectorizer
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(docs)
+
+print(vectorizer.get_feature_names_out())
+print(X.toarray())</code></pre>
+
+        <p class="mb-6 text-gray-700">
+          This code turns three small documents into a table of word counts. The result is a simple grid — rows for documents, columns for words, and numbers that show how often each word appears.
+        </p>
+
+        <p class="text-gray-500 italic">[Insert visual of a document-term matrix grid here]</p>
+      </div>
     </div>
   </section>
-
-  <!-- Section 2 -->
-  <section id="section2" class="section bg-gray-100 px-6 py-12">
-    <h2 class="text-2xl font-semibold mb-4">2. Recurrent Neural Networks</h2>
-    <ul class="list-disc ml-6 space-y-2">
-      <li><strong>2.1</strong> What is an RNN?</li>
-      <li><strong>2.2</strong> Mini-Batch Gradient Descent</li>
-      <li><strong>2.3</strong> Programming an RNN</li>
-      <li><strong>2.4</strong> RNN as a Language Model</li>
-      <li><strong>2.5</strong> Embedding Layer</li>
-      <li><strong>2.6</strong> Training & Loss</li>
-    </ul>
-  </section>
-
-  <!-- Remaining Sections Skipped for Brevity -->
 
   <footer class="text-center text-sm text-gray-500 py-6 border-t mt-10">
     © 2025 LLM Explained. Built with ❤️
