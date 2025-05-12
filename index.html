@@ -28,12 +28,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Understanding Large Language Models</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
   <style>
-    body {
-      font-family: 'Merriweather', serif;
-      background-color: #f9f9f9;
+    :root {
+      --primary-color: #3b82f6;
+      --secondary-color: #1d4ed8;
     }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+      transition: background-color 0.3s ease;
+    }
+
+    body.dark {
+      background-color: #1a1a1a;
+      color: #e5e5e5;
+    }
+
+    .dark .bg-white {
+      background-color: #2d2d2d;
+    }
+
+    .dark .text-gray-800 {
+      color: #e5e5e5;
+    }
+
+    .dark .text-gray-600 {
+      color: #a3a3a3;
+    }
+
+    .dark .border-gray-200 {
+      border-color: #404040;
+    }
+
+    .dark pre {
+      background-color: #1e1e1e;
+    }
+
     pre {
       background-color: #f4f4f4;
       padding: 1rem;
@@ -41,53 +76,125 @@
       overflow-x: auto;
       font-size: 0.95rem;
     }
+
     code {
-      font-family: 'Courier New', monospace;
+      font-family: 'Fira Code', monospace;
     }
+
     .toc a {
       display: block;
       margin-bottom: 0.5rem;
-      color: #1d4ed8;
+      color: var(--primary-color);
       font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .toc a:hover {
+      transform: translateX(5px);
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--primary-color);
+      transition: width 0.3s ease;
+      z-index: 1000;
+    }
+
+    .hero-gradient {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .token-animation {
+      animation: tokenPop 0.5s ease;
+    }
+
+    @keyframes tokenPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .dark-mode-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .dark-mode-toggle:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body class="text-gray-800">
+  <div class="progress-bar" id="progressBar"></div>
+  
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-57W8FQPR"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-  <header class="bg-white shadow-md py-6 px-4 text-center border-b">
-    <h1 class="text-4xl font-bold tracking-tight">Understanding Large Language Models</h1>
-    <p class="text-lg mt-2 text-gray-600">An intuitive guide to how language models work — from text to tokens to Transformers</p>
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()">
+    <span class="light-icon">🌞</span>
+    <span class="dark-icon hidden">🌙</span>
+  </button>
+
+  <header class="hero-gradient text-white py-20 px-4 text-center">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-5xl font-bold tracking-tight mb-6 animate-fade-in">Understanding Large Language Models</h1>
+      <p class="text-xl mt-2 opacity-90 animate-fade-in-delay">An intuitive guide to how language models work — from text to tokens to Transformers</p>
+      <div class="mt-8">
+        <a href="#section1" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-300 inline-block">
+          Start Learning
+        </a>
+      </div>
+    </div>
   </header>
 
   <section class="bg-white py-12 px-4 md:px-12 lg:px-24 border-b">
     <div class="max-w-5xl mx-auto text-center">
       <h2 class="text-2xl font-bold mb-6">Table of Contents</h2>
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-left">
-        <a href="#section1" class="p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+        <a href="#section1" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
           <h3 class="font-semibold text-blue-700 mb-1">1. What is a Language Model?</h3>
           <p class="text-sm text-gray-600">How language models predict and generate text.</p>
         </a>
-        <a href="#section2" class="p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+        <a href="#section2" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
           <h3 class="font-semibold text-blue-700 mb-1">2. From Text to Tokens</h3>
           <p class="text-sm text-gray-600">How raw text becomes machine-readable tokens.</p>
         </a>
-        <a href="#section3" class="p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+        <a href="#section3" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
           <h3 class="font-semibold text-blue-700 mb-1">3. Recurrent Neural Networks (RNNs)</h3>
           <p class="text-sm text-gray-600">Early models that process sequences step-by-step.</p>
         </a>
-        <a href="#section4" class="p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+        <a href="#section4" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
           <h3 class="font-semibold text-blue-700 mb-1">4. Transformers</h3>
           <p class="text-sm text-gray-600">The breakthrough model architecture behind modern AI.</p>
         </a>
-        <a href="#section5" class="p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+        <a href="#section5" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
           <h3 class="font-semibold text-blue-700 mb-1">5. Large Language Models (LLMs)</h3>
           <p class="text-sm text-gray-600">Scaling up Transformers for incredible capabilities.</p>
         </a>
-        <a href="#section6" class="p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+        <a href="#section6" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
           <h3 class="font-semibold text-blue-700 mb-1">6. Resources</h3>
           <p class="text-sm text-gray-600">Videos, links, and further learning material.</p>
         </a>
@@ -106,13 +213,13 @@
       </p>
   
       <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        Instead of understanding language like humans do, language models work statistically. They’ve seen billions of examples and learn the patterns of how words usually follow one another. This is why they can respond with surprisingly fluent and relevant text — even without true understanding.
+        Instead of understanding language like humans do, language models work statistically. They've seen billions of examples and learn the patterns of how words usually follow one another. This is why they can respond with surprisingly fluent and relevant text — even without true understanding.
       </p>
   
       <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
         <p class="font-semibold text-blue-900 mb-1">Analogy</p>
         <p class="text-gray-800">
-          Think of it like the game <strong>Mad Libs</strong>. If you say: “The cat sat on the ___,” a language model fills in “mat” — not because it knows what a cat is, but because it has seen that phrase thousands of times during training.
+          Think of it like the game <strong>Mad Libs</strong>. If you say: "The cat sat on the ___,", a language model fills in "mat" — not because it knows what a cat is, but because it has seen that phrase thousands of times during training.
         </p>
       </div>
   
@@ -128,12 +235,12 @@
     <h2 class="text-3xl font-bold mb-6">2. From Text to Tokens</h2>
 
     <p class="text-lg text-gray-700 leading-relaxed mb-4">
-      Computers can’t understand language the way we do — they need numbers. So before any language model can learn or make predictions, it first has to convert raw text into something machine-readable: <strong>tokens</strong>.
+      Computers can't understand language the way we do — they need numbers. So before any language model can learn or make predictions, it first has to convert raw text into something machine-readable: <strong>tokens</strong>.
     </p>
 
     <p class="text-lg text-gray-700 leading-relaxed mb-4">
       A token is simply a piece of text. It might be a word, part of a word, or even punctuation — depending on the tokenization strategy. For example, the sentence:
-      <em>“Language models are powerful.”</em> could be tokenized into: [“Language”, “models”, “are”, “powerful”, “.”]
+      <em>"Language models are powerful."</em> could be tokenized into: ["Language", "models", "are", "powerful", "."]
     </p>
 
     <p class="text-lg text-gray-700 leading-relaxed mb-4">
@@ -143,7 +250,7 @@
     <div class="border-l-4 border-yellow-600 bg-yellow-50 p-4 rounded mb-6">
       <p class="font-semibold text-yellow-900 mb-1">Analogy</p>
       <p class="text-gray-800">
-        Imagine a sentence is a basket of groceries. Tokenization is like listing every item in the basket. The model doesn’t care about flavors or brands — it just needs the list of ingredients to start learning.
+        Imagine a sentence is a basket of groceries. Tokenization is like listing every item in the basket. The model doesn't care about flavors or brands — it just needs the list of ingredients to start learning.
       </p>
     </div>
 
@@ -185,8 +292,12 @@ print(X.toarray())</code></pre>
       document.getElementById('tokenOutput').innerHTML = `
         <p><strong>Token Count:</strong> ${tokens.length}</p>
         <p><strong>Tokens:</strong></p>
-        <div class="bg-gray-100 p-4 rounded mt-2 whitespace-pre-wrap break-words">
-          <code>${tokens.join(', ')}</code>
+        <div class="bg-gray-100 p-4 rounded mt-2 flex flex-wrap gap-2">
+          ${tokens.map(token => `
+            <span class="token-animation bg-blue-100 text-blue-800 px-2 py-1 rounded">
+              ${token}
+            </span>
+          `).join('')}
         </div>
       `;
     }
@@ -208,7 +319,7 @@ print(X.toarray())</code></pre>
       <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
         <p class="font-semibold text-blue-900 mb-1">Analogy</p>
         <p class="text-gray-800">
-          Imagine you’re listening to a story one word at a time through a tiny earpiece. You don’t get to rewind — you just try to remember as much as possible while the words keep coming.
+          Imagine you're listening to a story one word at a time through a tiny earpiece. You don't get to rewind — you just try to remember as much as possible while the words keep coming.
         </p>
       </div>
   
@@ -247,16 +358,16 @@ print(X.toarray())</code></pre>
       <div class="border-l-4 border-purple-600 bg-purple-50 p-4 rounded mb-6">
         <p class="font-semibold text-purple-900 mb-1">Analogy</p>
         <p class="text-gray-800">
-          Imagine reading an entire paragraph and being able to instantly highlight the most important words that explain the meaning of each sentence. That’s what self-attention does — it lets the model “focus” on what matters.
+          Imagine reading an entire paragraph and being able to instantly highlight the most important words that explain the meaning of each sentence. That's what self-attention does — it lets the model "focus" on what matters.
         </p>
       </div>
   
       <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        This architecture is what powers models like BERT, GPT, and even me. It’s why Transformers are now the foundation of nearly all modern language AI — from search engines to chatbots.
+        This architecture is what powers models like BERT, GPT, and even me. It's why Transformers are now the foundation of nearly all modern language AI — from search engines to chatbots.
       </p>
   
       <p class="text-lg text-gray-700 leading-relaxed mb-0">
-        Transformers are not just faster — they’re smarter. They can consider every word’s relationship to every other word, all at once, which leads to richer understanding and more fluent generation.
+        Transformers are not just faster — they're smarter. They can consider every word's relationship to every other word, all at once, which leads to richer understanding and more fluent generation.
       </p>
     </div>
   </section>
@@ -267,7 +378,7 @@ print(X.toarray())</code></pre>
       <h2 class="text-3xl font-bold mb-6">5. Large Language Models (LLMs)</h2>
   
       <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        Large Language Models — or LLMs — are the next step in the evolution of language AI. They’re built on the Transformer architecture, but scaled up dramatically: more data, more parameters, more compute.
+        Large Language Models — or LLMs — are the next step in the evolution of language AI. They're built on the Transformer architecture, but scaled up dramatically: more data, more parameters, more compute.
       </p>
   
       <p class="text-lg text-gray-700 leading-relaxed mb-4">
@@ -277,16 +388,16 @@ print(X.toarray())</code></pre>
       <div class="border-l-4 border-green-600 bg-green-50 p-4 rounded mb-6">
         <p class="font-semibold text-green-900 mb-1">Analogy</p>
         <p class="text-gray-800">
-          Imagine giving a student access to the entire internet and letting them read non-stop for years. They won’t remember everything exactly, but they'll be able to guess what makes sense in almost any situation.
+          Imagine giving a student access to the entire internet and letting them read non-stop for years. They won't remember everything exactly, but they'll be able to guess what makes sense in almost any situation.
         </p>
       </div>
   
       <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        LLMs don’t “think” or “understand” the way humans do — they generate the most statistically likely response based on the input they’re given. But with enough data and scale, that statistical guesswork starts to feel surprisingly intelligent.
+        LLMs don't "think" or "understand" the way humans do — they generate the most statistically likely response based on the input they're given. But with enough data and scale, that statistical guesswork starts to feel surprisingly intelligent.
       </p>
   
       <p class="text-lg text-gray-700 leading-relaxed">
-        As powerful as they are, LLMs have limitations: they can hallucinate facts, reflect biases in their training data, and can’t access real-time information unless specifically designed to. But their capabilities today — and potential tomorrow — make them one of the most transformative technologies in AI.
+        As powerful as they are, LLMs have limitations: they can hallucinate facts, reflect biases in their training data, and can't access real-time information unless specifically designed to. But their capabilities today — and potential tomorrow — make them one of the most transformative technologies in AI.
       </p>
     </div>
   </section>
@@ -307,5 +418,50 @@ print(X.toarray())</code></pre>
   <footer class="text-center text-sm text-gray-500 py-6 border-t mt-10">
     © 2025 Understanding LLMs. Built with care.
   </footer>
+
+  <script>
+    // Initialize ScrollReveal
+    ScrollReveal().reveal('.card', {
+      delay: 200,
+      distance: '20px',
+      duration: 1000,
+      easing: 'cubic-bezier(0.5, 0, 0, 1)',
+      origin: 'bottom'
+    });
+
+    // Progress bar
+    window.onscroll = function() {
+      let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      let scrolled = (winScroll / height) * 100;
+      document.getElementById("progressBar").style.width = scrolled + "%";
+    };
+
+    // Dark mode toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const lightIcon = document.querySelector('.light-icon');
+      const darkIcon = document.querySelector('.dark-icon');
+      lightIcon.classList.toggle('hidden');
+      darkIcon.classList.toggle('hidden');
+    }
+
+    // Initialize code highlighting
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
 </body>
 </html>
