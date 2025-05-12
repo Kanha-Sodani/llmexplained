@@ -24,285 +24,319 @@
   </script>
   <!-- End VWO Async SmartCode -->
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Understanding Large Language Models</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-  <script src="https://unpkg.com/scrollreveal"></script>
-  <style>
-    :root {
-      --primary-color: #3b82f6;
-      --secondary-color: #1d4ed8;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f9f9f9;
-      transition: background-color 0.3s ease;
-    }
-
-    body.dark {
-      background-color: #1a1a1a;
-      color: #e5e5e5;
-    }
-
-    .dark .bg-white {
-      background-color: #2d2d2d;
-    }
-
-    .dark .text-gray-800 {
-      color: #e5e5e5;
-    }
-
-    .dark .text-gray-600 {
-      color: #a3a3a3;
-    }
-
-    .dark .border-gray-200 {
-      border-color: #404040;
-    }
-
-    .dark pre {
-      background-color: #1e1e1e;
-    }
-
-    pre {
-      background-color: #f4f4f4;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      overflow-x: auto;
-      font-size: 0.95rem;
-    }
-
-    code {
-      font-family: 'Fira Code', monospace;
-    }
-
-    .toc a {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--primary-color);
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .toc a:hover {
-      transform: translateX(5px);
-    }
-
-    .progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      background: var(--primary-color);
-      transition: width 0.3s ease;
-      z-index: 1000;
-    }
-
-    .hero-gradient {
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    }
-
-    .card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    .token-animation {
-      animation: tokenPop 0.5s ease;
-    }
-
-    @keyframes tokenPop {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .dark-mode-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 25px;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-    }
-
-    .dark-mode-toggle:hover {
-      transform: scale(1.05);
-    }
-  </style>
-</head>
-<body class="text-gray-800">
-  <div class="progress-bar" id="progressBar"></div>
-  
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-57W8FQPR"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-
-  <button class="dark-mode-toggle" onclick="toggleDarkMode()">
-    <span class="light-icon">🌞</span>
-    <span class="dark-icon hidden">🌙</span>
-  </button>
-
-  <header class="hero-gradient text-white py-20 px-4 text-center">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-5xl font-bold tracking-tight mb-6 animate-fade-in">Understanding Large Language Models</h1>
-      <p class="text-xl mt-2 opacity-90 animate-fade-in-delay">An intuitive guide to how language models work — from text to tokens to Transformers</p>
-      <div class="mt-8">
-        <a href="#section1" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-300 inline-block">
-          Start Learning
-        </a>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Large Language Models</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <style>
+      :root {
+        --primary-color: #3b82f6;
+        --secondary-color: #1d4ed8;
+        --light-bg: #f9f9f9;
+        --dark-bg: #18181b;
+        --dark-card: #23272f;
+        --dark-border: #374151;
+        --dark-text: #f3f4f6;
+        --dark-muted: #cbd5e1;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--light-bg);
+        transition: background-color 0.3s ease;
+      }
+      body.dark {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+      }
+      .hero-gradient {
+        background: #f9fafb;
+      }
+      .dark .hero-gradient {
+        background: #18181b !important;
+      }
+      .hero-heading {
+        font-family: 'Merriweather', serif;
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: #111827;
+        letter-spacing: 0.04em;
+        margin-bottom: 1.2rem;
+        text-align: center;
+        line-height: 1.1;
+        text-transform: uppercase;
+      }
+      @media (min-width: 640px) {
+        .hero-heading {
+          font-size: 2.2rem;
+        }
+      }
+      .dark .hero-heading {
+        color: #fff;
+      }
+      .hero-subtitle {
+        font-size: 1.18rem;
+        color: #222;
+        font-weight: 400;
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        letter-spacing: 0.01em;
+      }
+      .dark .hero-subtitle {
+        color: #fff;
+      }
+      .hero-btn {
+        background: linear-gradient(90deg, #2563eb 0%, #6366f1 100%);
+        color: #fff;
+        padding: 0.65rem 1.5rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+        transition: background 0.2s, transform 0.2s;
+        border: none;
+        outline: none;
+        margin-top: 0.5rem;
+      }
+      .hero-btn:hover {
+        background: linear-gradient(90deg, #1d4ed8 0%, #818cf8 100%);
+        transform: translateY(-2px) scale(1.04);
+      }
+      .dark-mode-toggle {
+        position: fixed;
+        top: 24px;
+        right: 32px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+      .dark-mode-toggle:hover {
+        transform: scale(1.05);
+      }
+      .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+      .token-animation {
+        animation: tokenPop 0.5s ease;
+      }
+      @keyframes tokenPop {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--primary-color);
+        transition: width 0.3s ease;
+        z-index: 1000;
+      }
+      .dark .progress-bar {
+        background: #60a5fa !important;
+      }
+      /* NUCLEAR DARK MODE FIX */
+      .dark .bg-white,
+      .dark .bg-gray-50,
+      .dark .bg-gray-100 {
+        background: #18181b !important;
+      }
+      .dark, .dark * {
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+      }
+      /* Fix analogy/info box text in dark mode */
+      .dark .bg-blue-50 { background: #223046 !important; }
+      .dark .bg-yellow-50 { background: #3a3622 !important; }
+      .dark .bg-purple-50 { background: #2d223a !important; }
+      .dark .bg-green-50 { background: #1e3a2a !important; }
+      .dark .bg-blue-50, .dark .bg-yellow-50, .dark .bg-purple-50, .dark .bg-green-50 {
+        color: #f3f4f6 !important;
+      }
+      .dark .bg-blue-50 .font-semibold, .dark .bg-blue-50 .text-blue-900 { color: #93c5fd !important; }
+      .dark .bg-yellow-50 .font-semibold, .dark .bg-yellow-50 .text-yellow-900 { color: #fde68a !important; }
+      .dark .bg-purple-50 .font-semibold, .dark .bg-purple-50 .text-purple-900 { color: #c4b5fd !important; }
+      .dark .bg-green-50 .font-semibold, .dark .bg-green-50 .text-green-900 { color: #6ee7b7 !important; }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <div class="progress-bar" id="progressBar"></div>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">
+      <span class="light-icon">🌞</span>
+      <span class="dark-icon hidden">🌙</span>
+    </button>
+    <header class="hero-gradient py-6 sm:py-8 px-4 text-center">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="hero-heading">Understanding Large Language Models</h1>
+        <p class="hero-subtitle">An intuitive guide to how language models work — from text to tokens to Transformers</p>
+        <div>
+          <a href="#section1" class="hero-btn inline-block">Start Learning</a>
+        </div>
       </div>
-    </div>
-  </header>
-
-  <section class="bg-white py-12 px-4 md:px-12 lg:px-24 border-b">
-    <div class="max-w-5xl mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-6">Table of Contents</h2>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-left">
-        <a href="#section1" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-          <h3 class="font-semibold text-blue-700 mb-1">1. What is a Language Model?</h3>
-          <p class="text-sm text-gray-600">How language models predict and generate text.</p>
-        </a>
-        <a href="#section2" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-          <h3 class="font-semibold text-blue-700 mb-1">2. From Text to Tokens</h3>
-          <p class="text-sm text-gray-600">How raw text becomes machine-readable tokens.</p>
-        </a>
-        <a href="#section3" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-          <h3 class="font-semibold text-blue-700 mb-1">3. Recurrent Neural Networks (RNNs)</h3>
-          <p class="text-sm text-gray-600">Early models that process sequences step-by-step.</p>
-        </a>
-        <a href="#section4" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-          <h3 class="font-semibold text-blue-700 mb-1">4. Transformers</h3>
-          <p class="text-sm text-gray-600">The breakthrough model architecture behind modern AI.</p>
-        </a>
-        <a href="#section5" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-          <h3 class="font-semibold text-blue-700 mb-1">5. Large Language Models (LLMs)</h3>
-          <p class="text-sm text-gray-600">Scaling up Transformers for incredible capabilities.</p>
-        </a>
-        <a href="#section6" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-          <h3 class="font-semibold text-blue-700 mb-1">6. Resources</h3>
-          <p class="text-sm text-gray-600">Videos, links, and further learning material.</p>
-        </a>
+    </header>
+    <section class="bg-white py-12 px-4 md:px-12 lg:px-24 border-b">
+      <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-2xl font-bold mb-6">Table of Contents</h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-left">
+          <a href="#section1" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+            <h3 class="font-semibold text-blue-700 mb-1">1. What is a Language Model?</h3>
+            <p class="text-sm text-gray-600">How language models predict and generate text.</p>
+          </a>
+          <a href="#section2" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+            <h3 class="font-semibold text-blue-700 mb-1">2. From Text to Tokens</h3>
+            <p class="text-sm text-gray-600">How raw text becomes machine-readable tokens.</p>
+          </a>
+          <a href="#section3" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+            <h3 class="font-semibold text-blue-700 mb-1">3. Recurrent Neural Networks (RNNs)</h3>
+            <p class="text-sm text-gray-600">Early models that process sequences step-by-step.</p>
+          </a>
+          <a href="#section4" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+            <h3 class="font-semibold text-blue-700 mb-1">4. Transformers</h3>
+            <p class="text-sm text-gray-600">The breakthrough model architecture behind modern AI.</p>
+          </a>
+          <a href="#section5" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+            <h3 class="font-semibold text-blue-700 mb-1">5. Large Language Models (LLMs)</h3>
+            <p class="text-sm text-gray-600">Scaling up Transformers for incredible capabilities.</p>
+          </a>
+          <a href="#section6" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+            <h3 class="font-semibold text-blue-700 mb-1">6. Resources</h3>
+            <p class="text-sm text-gray-600">Videos, links, and further learning material.</p>
+          </a>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Section 1 -->
-  <section id="section1" class="py-16 px-6 bg-gray-50">
-
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6">1. What is a Language Model?</h2>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        A language model is a type of machine learning model trained to understand and generate human language. Its main job is to predict the next word in a sentence, based on the words that came before. This prediction power enables a wide range of tasks — from autocomplete in your phone, to smart assistants like ChatGPT, to real-time translation services.
-      </p>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        Instead of understanding language like humans do, language models work statistically. They've seen billions of examples and learn the patterns of how words usually follow one another. This is why they can respond with surprisingly fluent and relevant text — even without true understanding.
-      </p>
-  
-      <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
-        <p class="font-semibold text-blue-900 mb-1">Analogy</p>
-        <p class="text-gray-800">
-          Think of it like the game <strong>Mad Libs</strong>. If you say: "The cat sat on the ___,", a language model fills in "mat" — not because it knows what a cat is, but because it has seen that phrase thousands of times during training.
+    </section>
+    <!-- Section 1 -->
+    <section id="section1" class="py-16 px-6 bg-gray-50">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold mb-6">1. What is a Language Model?</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          A language model is a type of machine learning model trained to understand and generate human language. Its main job is to predict the next word in a sentence, based on the words that came before. This prediction power enables a wide range of tasks — from autocomplete in your phone, to smart assistants like ChatGPT, to real-time translation services.
+        </p>
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Instead of understanding language like humans do, language models work statistically. They've seen billions of examples and learn the patterns of how words usually follow one another. This is why they can respond with surprisingly fluent and relevant text — even without true understanding.
+        </p>
+        <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
+          <p class="font-semibold text-blue-900 mb-1">Analogy</p>
+          <p class="text-gray-800">
+            Think of it like the game <strong>Mad Libs</strong>. If you say: "The cat sat on the ___,", a language model fills in "mat" — not because it knows what a cat is, but because it has seen that phrase thousands of times during training.
+          </p>
+        </div>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Language models are the foundation of modern AI. They're what power chatbots, summarize documents, write code, translate languages, and even help diagnose medical issues — all by learning patterns in language.
         </p>
       </div>
-  
-      <p class="text-lg text-gray-700 leading-relaxed">
-        Language models are the foundation of modern AI. They're what power chatbots, summarize documents, write code, translate languages, and even help diagnose medical issues — all by learning patterns in language.
-      </p>
-    </div>
-  </section>
-
- <!-- Section 2 -->
-  <section id="section2" class="pb-8 px-6 bg-gray-50">  
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-3xl font-bold mb-6">2. From Text to Tokens</h2>
-
-    <p class="text-lg text-gray-700 leading-relaxed mb-4">
-      Computers can't understand language the way we do — they need numbers. So before any language model can learn or make predictions, it first has to convert raw text into something machine-readable: <strong>tokens</strong>.
-    </p>
-
-    <p class="text-lg text-gray-700 leading-relaxed mb-4">
-      A token is simply a piece of text. It might be a word, part of a word, or even punctuation — depending on the tokenization strategy. For example, the sentence:
-      <em>"Language models are powerful."</em> could be tokenized into: ["Language", "models", "are", "powerful", "."]
-    </p>
-
-    <p class="text-lg text-gray-700 leading-relaxed mb-4">
-      Once tokenized, the model assigns each token a unique number, and these numbers are what it actually learns from — not the words themselves.
-    </p>
-
-    <div class="border-l-4 border-yellow-600 bg-yellow-50 p-4 rounded mb-6">
-      <p class="font-semibold text-yellow-900 mb-1">Analogy</p>
-      <p class="text-gray-800">
-        Imagine a sentence is a basket of groceries. Tokenization is like listing every item in the basket. The model doesn't care about flavors or brands — it just needs the list of ingredients to start learning.
-      </p>
-    </div>
-
-    <p class="text-lg text-gray-700 leading-relaxed mb-6">
-      One of the simplest ways to tokenize is the <strong>Bag of Words</strong> model — where we ignore order, and just count how many times each word appears. Here's a tiny example:
-    </p>
-
-    <pre><code># Sample text documents
-docs = ["I love movies", "Movies are fun", "I love fun"]
-from sklearn.feature_extraction.text import CountVectorizer
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(docs)
-print(vectorizer.get_feature_names_out())
-print(X.toarray())</code></pre>
-
-    <p class="text-lg text-gray-700 leading-relaxed mb-4">
-      Each document becomes a row in a matrix, and each word becomes a column. The numbers show how often each word appears in each sentence.
-    </p>
-
-    <h3 class="text-2xl font-semibold mt-10 mb-4">Try It Yourself</h3>
-    <p class="text-gray-700 mb-4">
-      Type your own sentence below and see how it gets tokenized:
-    </p>
-
-    <input id="inputText" type="text" class="w-full p-3 border border-gray-300 rounded mb-4" placeholder="Type or paste a sentence here...">
-    <button onclick="runTokenizer()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tokenize</button>
-    <div id="tokenOutput" class="mt-6 text-gray-700 text-base leading-relaxed"></div>
-  </div>
-</section>
-
-  <script>
-    function runTokenizer() {
-      const input = document.getElementById('inputText').value.trim();
-      if (!input) return;
-      const tokens = input.match(/\b\w+\b/g) || [];
-      if (window.dataLayer) {
-        dataLayer.push({ event: 'tokenizer_used', input_length: input.length, token_count: tokens.length });
-      }
-      document.getElementById('tokenOutput').innerHTML = `
-        <p><strong>Token Count:</strong> ${tokens.length}</p>
-        <p><strong>Tokens:</strong></p>
-        <div class="bg-gray-100 p-4 rounded mt-2 flex flex-wrap gap-2">
-          ${tokens.map(token => `
-            <span class="token-animation bg-blue-100 text-blue-800 px-2 py-1 rounded">
-              ${token}
-            </span>
-          `).join('')}
+    </section>
+    <!-- Section 2 -->
+    <section id="section2" class="pb-8 px-6 bg-gray-50">  
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold mb-6">2. From Text to Tokens</h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Computers can't understand language the way we do — they need numbers. So before any language model can learn or make predictions, it first has to convert raw text into something machine-readable: <strong>tokens</strong>.
+        </p>
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          A token is simply a piece of text. It might be a word, part of a word, or even punctuation — depending on the tokenization strategy. For example, the sentence:
+          <em>"Language models are powerful."</em> could be tokenized into: ["Language", "models", "are", "powerful", "."]
+        </p>
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Once tokenized, the model assigns each token a unique number, and these numbers are what it actually learns from — not the words themselves.
+        </p>
+        <div class="border-l-4 border-yellow-600 bg-yellow-50 p-4 rounded mb-6">
+          <p class="font-semibold text-yellow-900 mb-1">Analogy</p>
+          <p class="text-gray-800">
+            Imagine a sentence is a basket of groceries. Tokenization is like listing every item in the basket. The model doesn't care about flavors or brands — it just needs the list of ingredients to start learning.
+          </p>
         </div>
-      `;
-    }
-  </script>
-
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+          One of the simplest ways to tokenize is the <strong>Bag of Words</strong> model — where we ignore order, and just count how many times each word appears. Here's a tiny example:
+        </p>
+        <pre><code># Sample text documents
+  docs = ["I love movies", "Movies are fun", "I love fun"]
+  from sklearn.feature_extraction.text import CountVectorizer
+  vectorizer = CountVectorizer()
+  X = vectorizer.fit_transform(docs)
+  print(vectorizer.get_feature_names_out())
+  print(X.toarray())</code></pre>
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Each document becomes a row in a matrix, and each word becomes a column. The numbers show how often each word appears in each sentence.
+        </p>
+        <h3 class="text-2xl font-semibold mt-10 mb-4">Try It Yourself</h3>
+        <p class="text-gray-700 mb-4">
+          Type your own sentence below and see how it gets tokenized:
+        </p>
+        <input id="inputText" type="text" class="w-full p-3 border border-gray-300 rounded mb-4" placeholder="Type or paste a sentence here...">
+        <button onclick="runTokenizer()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tokenize</button>
+        <div id="tokenOutput" class="mt-6 text-gray-700 text-base leading-relaxed"></div>
+        <p class="mt-8 mb-2 text-base text-black dark:text-white text-center">
+          Curious how ChatGPT really sees your text? Try out the actual tokenizer used by OpenAI's models <a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener" class="underline hover:text-blue-700 dark:hover:text-blue-300">here</a>.
+        </p>
+      </div>
+    </section>
+    <script>
+      function runTokenizer() {
+        const input = document.getElementById('inputText').value.trim();
+        if (!input) return;
+        const tokens = input.match(/\b\w+\b/g) || [];
+        if (window.dataLayer) {
+          dataLayer.push({ event: 'tokenizer_used', input_length: input.length, token_count: tokens.length });
+        }
+        document.getElementById('tokenOutput').innerHTML = `
+          <p><strong>Token Count:</strong> ${tokens.length}</p>
+          <p><strong>Tokens:</strong></p>
+          <div class="bg-gray-100 p-4 rounded mt-2 flex flex-wrap gap-2">
+            ${tokens.map(token => `
+              <span class="token-animation bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                ${token}
+              </span>
+            `).join('')}
+          </div>
+        `;
+      }
+      // Dark mode toggle
+      function toggleDarkMode() {
+        document.body.classList.toggle('dark');
+        const lightIcon = document.querySelector('.light-icon');
+        const darkIcon = document.querySelector('.dark-icon');
+        lightIcon.classList.toggle('hidden');
+        darkIcon.classList.toggle('hidden');
+      }
+      // Initialize code highlighting
+      document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightBlock(block);
+        });
+      });
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^=\"#\"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+      // Progress bar
+      window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById('progressBar').style.width = scrolled + '%';
+      };
+    </script>
+  
   <!-- Section 3 -->
   <section id="section3" class="pb-8 px-6 bg-gray-50">
     <div class="max-w-6xl mx-auto">
@@ -434,7 +468,7 @@ print(X.toarray())</code></pre>
       let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
       let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       let scrolled = (winScroll / height) * 100;
-      document.getElementById("progressBar").style.width = scrolled + "%";
+      document.getElementById('progressBar').style.width = scrolled + '%';
     };
 
     // Dark mode toggle
