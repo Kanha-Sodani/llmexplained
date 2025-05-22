@@ -110,8 +110,8 @@
       }
       .dark-mode-toggle {
         position: fixed;
-        top: 24px;
-        right: 32px;
+        top: 18px;
+        right: 18px;
         background: var(--primary-color);
         color: white;
         border: none;
@@ -120,7 +120,15 @@
         cursor: pointer;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
-        z-index: 1000;
+        z-index: 1100;
+      }
+      @media (max-width: 640px) {
+        .dark-mode-toggle {
+          top: 8px;
+          right: 8px;
+          padding: 7px 13px;
+          font-size: 1.1rem;
+        }
       }
       .dark-mode-toggle:hover {
         transform: scale(1.05);
@@ -191,9 +199,11 @@
         transition: all 0.3s ease;
         z-index: 1000;
       }
-      .floating-btn:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      @media (max-width: 640px) {
+        .floating-btn {
+          bottom: 18px;
+          right: 18px;
+        }
       }
       .floating-menu {
         position: fixed;
@@ -325,17 +335,17 @@
       <a href="#section6" class="menu-item">Resources</a>
     </div>
 
-    <header class="hero-gradient py-6 sm:py-8 px-2 text-center">
+    <header class="hero-gradient py-4 sm:py-6 px-2 text-center">
       <div class="max-w-4xl mx-auto">
-        <h1 class="hero-heading mb-2">Understanding Large Language Models</h1>
-        <p class="hero-subtitle mb-4">An intuitive guide to how language models work — from text to tokens to Transformers</p>
-        <div class="flex flex-col md:flex-row md:justify-center md:items-center gap-3 md:gap-4 w-full mt-4">
-          <button id="likeBtn" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300">
+        <h1 class="hero-heading mb-2 text-2xl sm:text-3xl md:text-4xl">Understanding Large Language Models</h1>
+        <p class="hero-subtitle mb-3 text-base sm:text-lg">An intuitive guide to how language models work — from text to tokens to Transformers</p>
+        <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-4 w-full max-w-3xl mx-auto mt-3">
+          <button id="likeBtn" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300 w-full sm:w-auto">
             <span id="likeIcon" class="text-lg">♡</span>
             <span id="likeText">Like</span>
             <span id="likeCount" class="ml-1">0</span>
           </button>
-          <button onclick="downloadPDF()" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300">
+          <button onclick="downloadPDF()" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300 w-full sm:w-auto">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
@@ -343,9 +353,9 @@
             </svg>
             Download PDF
           </button>
-          <form class="flex flex-col sm:flex-row gap-2 items-center" onsubmit="subscribeLLM(event)">
-            <input type="text" id="subscribeEmail" placeholder="Your email address" class="w-44 sm:w-56 px-4 py-2.5 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400 transition" />
-            <button type="submit" class="px-5 py-2.5 rounded-md font-semibold text-white bg-gradient-to-r from-violet-500 to-indigo-600 shadow hover:scale-105 transition-transform">Subscribe</button>
+          <form class="flex flex-col sm:flex-row gap-2 items-center w-full sm:w-auto" onsubmit="subscribeLLM(event)">
+            <input type="text" id="subscribeEmail" placeholder="Your email address" class="w-full sm:w-56 px-4 py-2.5 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400 transition" />
+            <button type="submit" class="px-5 py-2.5 rounded-md font-semibold text-white bg-gradient-to-r from-violet-500 to-indigo-600 shadow hover:scale-105 transition-transform w-full sm:w-auto">Subscribe</button>
           </form>
         </div>
         <div id="subscribeMsg" class="mt-2 text-green-600 font-medium hidden">You are subscribed!</div>
