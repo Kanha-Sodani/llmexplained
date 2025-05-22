@@ -115,23 +115,23 @@
         background: var(--primary-color);
         color: white;
         border: none;
-        padding: 10px 20px;
+        padding: 8px 16px;
         border-radius: 25px;
         cursor: pointer;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
         z-index: 1100;
       }
+      .dark-mode-toggle:hover {
+        transform: scale(1.05);
+      }
       @media (max-width: 640px) {
         .dark-mode-toggle {
           top: 8px;
           right: 8px;
-          padding: 7px 13px;
+          padding: 6px 12px;
           font-size: 1.1rem;
         }
-      }
-      .dark-mode-toggle:hover {
-        transform: scale(1.05);
       }
       .card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -186,9 +186,8 @@
         position: fixed;
         bottom: 30px;
         right: 30px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
+        padding: 8px 16px;
+        border-radius: 25px;
         background: var(--primary-color);
         color: white;
         display: flex;
@@ -203,6 +202,7 @@
         .floating-btn {
           bottom: 18px;
           right: 18px;
+          padding: 6px 12px;
         }
       }
       .floating-menu {
@@ -335,7 +335,7 @@
       <a href="#section6" class="menu-item">Resources</a>
     </div>
 
-    <header class="hero-gradient py-4 sm:py-6 px-2 text-center">
+    <header class="hero-gradient py-10 sm:py-16 px-2 text-center">
       <div class="max-w-4xl mx-auto">
         <h1 class="hero-heading mb-2 text-2xl sm:text-3xl md:text-4xl">Understanding Large Language Models</h1>
         <p class="hero-subtitle mb-3 text-base sm:text-lg">An intuitive guide to how language models work — from text to tokens to Transformers</p>
