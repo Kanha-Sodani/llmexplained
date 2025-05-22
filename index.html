@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
+    <!-- html2pdf.js for PDF download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
       :root {
         --primary-color: #3b82f6;
@@ -171,6 +173,131 @@
       .dark .bg-yellow-50 .font-semibold, .dark .bg-yellow-50 .text-yellow-900 { color: #fde68a !important; }
       .dark .bg-purple-50 .font-semibold, .dark .bg-purple-50 .text-purple-900 { color: #c4b5fd !important; }
       .dark .bg-green-50 .font-semibold, .dark .bg-green-50 .text-green-900 { color: #6ee7b7 !important; }
+      /* Add new styles */
+      .floating-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+      .floating-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      }
+      .floating-menu {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        background: #fff;
+        border-radius: 16px;
+        padding: 8px 0;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        display: none;
+        z-index: 999;
+        min-width: 220px;
+      }
+      .dark .floating-menu {
+        background: #23272f;
+      }
+      .floating-menu.active {
+        display: block;
+        animation: slideUp 0.3s ease;
+      }
+      @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      .menu-item {
+        display: block;
+        padding: 14px 28px;
+        color: #222;
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background 0.18s, color 0.18s;
+        white-space: nowrap;
+        font-size: 1.05rem;
+        letter-spacing: 0.01em;
+      }
+      .menu-item:hover {
+        background: #f3f4f6;
+        color: #2563eb;
+      }
+      .dark .menu-item {
+        color: #f3f4f6;
+      }
+      .dark .menu-item:hover {
+        background: #374151;
+        color: #60a5fa;
+      }
+      .download-btn {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+      .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+      }
+      .section-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+      }
+      .dark .section-card {
+        background: var(--dark-card);
+      }
+      .section-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      }
+      /* Tokenizer dark mode fixes */
+      .dark #inputText::placeholder {
+        color: #e0e7ef !important;
+        opacity: 1;
+      }
+      .dark #inputText {
+        background: #23272f !important;
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+      }
+      .dark #tokenOutput {
+        color: #f3f4f6 !important;
+      }
+      .dark .token-output-box {
+        background: #18181b !important;
+      }
+      .dark .token-span {
+        background: #6366f1 !important;
+        color: #fff !important;
+      }
+      .dark .tokenize-btn {
+        background: linear-gradient(90deg, #6366f1 0%, #a78bfa 100%) !important;
+        color: #fff !important;
+        border: none !important;
+      }
     </style>
   </head>
   <body class="text-gray-800">
@@ -179,110 +306,152 @@
       <span class="light-icon">🌞</span>
       <span class="dark-icon hidden">🌙</span>
     </button>
-    <header class="hero-gradient py-6 sm:py-8 px-4 text-center">
+
+    <!-- Add floating action button -->
+    <div class="floating-btn" onclick="toggleFloatingMenu()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </div>
+
+    <!-- Add floating menu -->
+    <div class="floating-menu" id="floatingMenu">
+      <a href="#section1" class="menu-item">What is a Language Model?</a>
+      <a href="#section2" class="menu-item">From Text to Tokens</a>
+      <a href="#section3" class="menu-item">RNNs</a>
+      <a href="#section4" class="menu-item">Transformers</a>
+      <a href="#section5" class="menu-item">LLMs</a>
+      <a href="#section6" class="menu-item">Resources</a>
+    </div>
+
+    <header class="hero-gradient py-6 sm:py-8 px-2 text-center">
       <div class="max-w-4xl mx-auto">
-        <h1 class="hero-heading">Understanding Large Language Models</h1>
-        <p class="hero-subtitle">An intuitive guide to how language models work — from text to tokens to Transformers</p>
-        <div>
-          <a href="#section1" class="hero-btn inline-block">Start Learning</a>
+        <h1 class="hero-heading mb-2">Understanding Large Language Models</h1>
+        <p class="hero-subtitle mb-4">An intuitive guide to how language models work — from text to tokens to Transformers</p>
+        <div class="flex flex-col md:flex-row md:justify-center md:items-center gap-3 md:gap-4 w-full mt-4">
+          <button id="likeBtn" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300">
+            <span id="likeIcon" class="text-lg">♡</span>
+            <span id="likeText">Like</span>
+            <span id="likeCount" class="ml-1">0</span>
+          </button>
+          <button onclick="downloadPDF()" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download PDF
+          </button>
+          <form class="flex flex-col sm:flex-row gap-2 items-center" onsubmit="subscribeLLM(event)">
+            <input type="text" id="subscribeEmail" placeholder="Your email address" class="w-44 sm:w-56 px-4 py-2.5 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400 transition" />
+            <button type="submit" class="px-5 py-2.5 rounded-md font-semibold text-white bg-gradient-to-r from-violet-500 to-indigo-600 shadow hover:scale-105 transition-transform">Subscribe</button>
+          </form>
         </div>
+        <div id="subscribeMsg" class="mt-2 text-green-600 font-medium hidden">You are subscribed!</div>
       </div>
     </header>
-    <section class="bg-white py-12 px-4 md:px-12 lg:px-24 border-b">
-      <div class="max-w-5xl mx-auto text-center">
-        <h2 class="text-2xl font-bold mb-6">Table of Contents</h2>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-left">
-          <a href="#section1" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-            <h3 class="font-semibold text-blue-700 mb-1">1. What is a Language Model?</h3>
-            <p class="text-sm text-gray-600">How language models predict and generate text.</p>
-          </a>
-          <a href="#section2" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-            <h3 class="font-semibold text-blue-700 mb-1">2. From Text to Tokens</h3>
-            <p class="text-sm text-gray-600">How raw text becomes machine-readable tokens.</p>
-          </a>
-          <a href="#section3" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-            <h3 class="font-semibold text-blue-700 mb-1">3. Recurrent Neural Networks (RNNs)</h3>
-            <p class="text-sm text-gray-600">Early models that process sequences step-by-step.</p>
-          </a>
-          <a href="#section4" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-            <h3 class="font-semibold text-blue-700 mb-1">4. Transformers</h3>
-            <p class="text-sm text-gray-600">The breakthrough model architecture behind modern AI.</p>
-          </a>
-          <a href="#section5" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-            <h3 class="font-semibold text-blue-700 mb-1">5. Large Language Models (LLMs)</h3>
-            <p class="text-sm text-gray-600">Scaling up Transformers for incredible capabilities.</p>
-          </a>
-          <a href="#section6" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
-            <h3 class="font-semibold text-blue-700 mb-1">6. Resources</h3>
-            <p class="text-sm text-gray-600">Videos, links, and further learning material.</p>
-          </a>
+    <section class="bg-gray-50 py-8 flex justify-center items-center">
+      <div class="w-full max-w-5xl flex flex-col items-center">
+        <div class="section-card w-full">
+          <h2 class="text-2xl font-bold mb-4 text-center">Table of Contents</h2>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 text-left">
+            <a href="#section1" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+              <h3 class="font-semibold text-blue-700 mb-1">1. What is a Language Model?</h3>
+              <p class="text-sm text-gray-600">How language models predict and generate text.</p>
+            </a>
+            <a href="#section2" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+              <h3 class="font-semibold text-blue-700 mb-1">2. From Text to Tokens</h3>
+              <p class="text-sm text-gray-600">How raw text becomes machine-readable tokens.</p>
+            </a>
+            <a href="#section3" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+              <h3 class="font-semibold text-blue-700 mb-1">3. Recurrent Neural Networks (RNNs)</h3>
+              <p class="text-sm text-gray-600">Early models that process sequences step-by-step.</p>
+            </a>
+            <a href="#section4" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+              <h3 class="font-semibold text-blue-700 mb-1">4. Transformers</h3>
+              <p class="text-sm text-gray-600">The breakthrough model architecture behind modern AI.</p>
+            </a>
+            <a href="#section5" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+              <h3 class="font-semibold text-blue-700 mb-1">5. Large Language Models (LLMs)</h3>
+              <p class="text-sm text-gray-600">Scaling up Transformers for incredible capabilities.</p>
+            </a>
+            <a href="#section6" class="card p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow transition">
+              <h3 class="font-semibold text-blue-700 mb-1">6. Resources</h3>
+              <p class="text-sm text-gray-600">Videos, links, and further learning material.</p>
+            </a>
+          </div>
         </div>
       </div>
     </section>
     <!-- Section 1 -->
     <section id="section1" class="py-16 px-6 bg-gray-50">
       <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold mb-6">1. What is a Language Model?</h2>
-        <p class="text-lg text-gray-700 leading-relaxed mb-4">
-          A language model is a type of machine learning model trained to understand and generate human language. Its main job is to predict the next word in a sentence, based on the words that came before. This prediction power enables a wide range of tasks — from autocomplete in your phone, to smart assistants like ChatGPT, to real-time translation services.
-        </p>
-        <p class="text-lg text-gray-700 leading-relaxed mb-4">
-          Instead of understanding language like humans do, language models work statistically. They've seen billions of examples and learn the patterns of how words usually follow one another. This is why they can respond with surprisingly fluent and relevant text — even without true understanding.
-        </p>
-        <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
-          <p class="font-semibold text-blue-900 mb-1">Analogy</p>
-          <p class="text-gray-800">
-            Think of it like the game <strong>Mad Libs</strong>. If you say: "The cat sat on the ___,", a language model fills in "mat" — not because it knows what a cat is, but because it has seen that phrase thousands of times during training.
+        <div class="section-card">
+          <h2 class="text-3xl font-bold mb-6">1. What is a Language Model?</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            A language model is a type of machine learning model trained to understand and generate human language. Its main job is to predict the next word in a sentence, based on the words that came before. This prediction power enables a wide range of tasks — from autocomplete in your phone, to smart assistants like ChatGPT, to real-time translation services.
+          </p>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            Instead of understanding language like humans do, language models work statistically. They've seen billions of examples and learn the patterns of how words usually follow one another. This is why they can respond with surprisingly fluent and relevant text — even without true understanding.
+          </p>
+          <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
+            <p class="font-semibold text-blue-900 mb-1">Analogy</p>
+            <p class="text-gray-800">
+              Think of it like the game <strong>Mad Libs</strong>. If you say: "The cat sat on the ___,", a language model fills in "mat" — not because it knows what a cat is, but because it has seen that phrase thousands of times during training.
+            </p>
+          </div>
+          <p class="text-lg text-gray-700 leading-relaxed">
+            Language models are the foundation of modern AI. They're what power chatbots, summarize documents, write code, translate languages, and even help diagnose medical issues — all by learning patterns in language.
           </p>
         </div>
-        <p class="text-lg text-gray-700 leading-relaxed">
-          Language models are the foundation of modern AI. They're what power chatbots, summarize documents, write code, translate languages, and even help diagnose medical issues — all by learning patterns in language.
-        </p>
       </div>
     </section>
     <!-- Section 2 -->
     <section id="section2" class="pb-8 px-6 bg-gray-50">  
       <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold mb-6">2. From Text to Tokens</h2>
-        <p class="text-lg text-gray-700 leading-relaxed mb-4">
-          Computers can't understand language the way we do — they need numbers. So before any language model can learn or make predictions, it first has to convert raw text into something machine-readable: <strong>tokens</strong>.
-        </p>
-        <p class="text-lg text-gray-700 leading-relaxed mb-4">
-          A token is simply a piece of text. It might be a word, part of a word, or even punctuation — depending on the tokenization strategy. For example, the sentence:
-          <em>"Language models are powerful."</em> could be tokenized into: ["Language", "models", "are", "powerful", "."]
-        </p>
-        <p class="text-lg text-gray-700 leading-relaxed mb-4">
-          Once tokenized, the model assigns each token a unique number, and these numbers are what it actually learns from — not the words themselves.
-        </p>
-        <div class="border-l-4 border-yellow-600 bg-yellow-50 p-4 rounded mb-6">
-          <p class="font-semibold text-yellow-900 mb-1">Analogy</p>
-          <p class="text-gray-800">
-            Imagine a sentence is a basket of groceries. Tokenization is like listing every item in the basket. The model doesn't care about flavors or brands — it just needs the list of ingredients to start learning.
+        <div class="section-card">
+          <h2 class="text-3xl font-bold mb-6">2. From Text to Tokens</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            Computers can't understand language the way we do — they need numbers. So before any language model can learn or make predictions, it first has to convert raw text into something machine-readable: <strong>tokens</strong>.
           </p>
-        </div>
-        <p class="text-lg text-gray-700 leading-relaxed mb-6">
-          One of the simplest ways to tokenize is the <strong>Bag of Words</strong> model — where we ignore order, and just count how many times each word appears. Here's a tiny example:
-        </p>
-        <pre><code># Sample text documents
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            A token is simply a piece of text. It might be a word, part of a word, or even punctuation — depending on the tokenization strategy. For example, the sentence:
+            <em>"Language models are powerful."</em> could be tokenized into: ["Language", "models", "are", "powerful", "."]
+          </p>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            Once tokenized, the model assigns each token a unique number, and these numbers are what it actually learns from — not the words themselves.
+          </p>
+          <div class="border-l-4 border-yellow-600 bg-yellow-50 p-4 rounded mb-6">
+            <p class="font-semibold text-yellow-900 mb-1">Analogy</p>
+            <p class="text-gray-800">
+              Imagine a sentence is a basket of groceries. Tokenization is like listing every item in the basket. The model doesn't care about flavors or brands — it just needs the list of ingredients to start learning.
+            </p>
+          </div>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            One of the simplest ways to tokenize is the <strong>Bag of Words</strong> model — where we ignore order, and just count how many times each word appears. Here's a tiny example:
+          </p>
+          <pre><code># Sample text documents
   docs = ["I love movies", "Movies are fun", "I love fun"]
   from sklearn.feature_extraction.text import CountVectorizer
   vectorizer = CountVectorizer()
   X = vectorizer.fit_transform(docs)
   print(vectorizer.get_feature_names_out())
   print(X.toarray())</code></pre>
-        <p class="text-lg text-gray-700 leading-relaxed mb-4">
-          Each document becomes a row in a matrix, and each word becomes a column. The numbers show how often each word appears in each sentence.
-        </p>
-        <h3 class="text-2xl font-semibold mt-10 mb-4">Try It Yourself</h3>
-        <p class="text-gray-700 mb-4">
-          Type your own sentence below and see how it gets tokenized:
-        </p>
-        <input id="inputText" type="text" class="w-full p-3 border border-gray-300 rounded mb-4" placeholder="Type or paste a sentence here...">
-        <button onclick="runTokenizer()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tokenize</button>
-        <div id="tokenOutput" class="mt-6 text-gray-700 text-base leading-relaxed"></div>
-        <p class="mt-8 mb-2 text-base text-black dark:text-white text-center">
-          Curious how ChatGPT really sees your text? Try out the actual tokenizer used by OpenAI's models <a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener" class="underline hover:text-blue-700 dark:hover:text-blue-300">here</a>.
-        </p>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            Each document becomes a row in a matrix, and each word becomes a column. The numbers show how often each word appears in each sentence.
+          </p>
+          <h3 class="text-2xl font-semibold mt-10 mb-4">Try It Yourself</h3>
+          <p class="text-gray-700 mb-4">
+            Type your own sentence below and see how it gets tokenized:
+          </p>
+          <input id="inputText" type="text" class="w-full p-3 border border-gray-300 rounded mb-4" placeholder="Type or paste a sentence here...">
+          <button onclick="runTokenizer()" class="tokenize-btn px-4 py-2 rounded-md font-semibold shadow bg-blue-600 text-white hover:bg-blue-700 transition">Tokenize</button>
+          <div id="tokenOutput" class="mt-6 text-gray-700 text-base leading-relaxed"></div>
+          <p class="mt-8 mb-2 text-base text-black dark:text-white text-center">
+            Curious how ChatGPT really sees your text? Try out the actual tokenizer used by OpenAI's models <a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener" class="underline hover:text-blue-700 dark:hover:text-blue-300">here</a>.
+          </p>
+        </div>
       </div>
     </section>
     <script>
@@ -296,9 +465,9 @@
         document.getElementById('tokenOutput').innerHTML = `
           <p><strong>Token Count:</strong> ${tokens.length}</p>
           <p><strong>Tokens:</strong></p>
-          <div class="bg-gray-100 p-4 rounded mt-2 flex flex-wrap gap-2">
+          <div class="token-output-box bg-gray-100 dark:bg-[#18181b] p-4 rounded mt-2 flex flex-wrap gap-2">
             ${tokens.map(token => `
-              <span class="token-animation bg-blue-100 text-blue-800 px-2 py-1 rounded">
+              <span class="token-span token-animation bg-blue-100 dark:bg-indigo-500 dark:text-white text-blue-800 px-2 py-1 rounded">
                 ${token}
               </span>
             `).join('')}
@@ -335,104 +504,192 @@
         let scrolled = (winScroll / height) * 100;
         document.getElementById('progressBar').style.width = scrolled + '%';
       };
+
+      // Floating menu toggle
+      function toggleFloatingMenu() {
+        const menu = document.getElementById('floatingMenu');
+        menu.classList.toggle('active');
+      }
+
+      // Close floating menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const menu = document.getElementById('floatingMenu');
+        const btn = document.querySelector('.floating-btn');
+        if (!menu.contains(event.target) && !btn.contains(event.target)) {
+          menu.classList.remove('active');
+        }
+      });
+
+      // Like button logic
+      let liked = false;
+      let likeCount = 0;
+      const likeBtn = document.getElementById('likeBtn');
+      const likeIcon = document.getElementById('likeIcon');
+      const likeText = document.getElementById('likeText');
+      const likeCountSpan = document.getElementById('likeCount');
+      if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+          liked = !liked;
+          if (liked) {
+            likeIcon.textContent = '❤️';
+            likeText.textContent = 'Liked';
+            likeCount++;
+          } else {
+            likeIcon.textContent = '♡';
+            likeText.textContent = 'Like';
+            likeCount = Math.max(0, likeCount - 1);
+          }
+          likeCountSpan.textContent = likeCount;
+        });
+      }
+
+      // PDF download function
+      function downloadPDF() {
+        // Hide floating/fixed UI for PDF
+        document.querySelector('.floating-btn').style.display = 'none';
+        document.querySelector('.dark-mode-toggle').style.display = 'none';
+        document.getElementById('floatingMenu').style.display = 'none';
+        // Download the main body as PDF
+        html2pdf()
+          .set({
+            margin: 0.2,
+            filename: 'Understanding_LLMs.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+          })
+          .from(document.body)
+          .save()
+          .then(() => {
+            // Restore UI
+            document.querySelector('.floating-btn').style.display = '';
+            document.querySelector('.dark-mode-toggle').style.display = '';
+            document.getElementById('floatingMenu').style.display = '';
+          });
+      }
+
+      // Enhanced scroll reveal
+      ScrollReveal().reveal('.section-card', {
+        delay: 200,
+        distance: '30px',
+        duration: 1000,
+        easing: 'cubic-bezier(0.5, 0, 0, 1)',
+        origin: 'bottom'
+      });
+
+      // Subscribe form handler
+      function subscribeLLM(event) {
+        event.preventDefault();
+        document.getElementById('subscribeMsg').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('subscribeMsg').classList.add('hidden');
+        }, 3500);
+        event.target.reset();
+      }
     </script>
   
   <!-- Section 3 -->
   <section id="section3" class="pb-8 px-6 bg-gray-50">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6">3. Recurrent Neural Networks (RNNs)</h2>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        Language has order. The meaning of a sentence often depends on the words that came before — and that's where <strong>Recurrent Neural Networks (RNNs)</strong> come in.
-      </p>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        RNNs are designed to process text <em>one word at a time</em>, keeping a memory of what came before. Think of it like reading a sentence from left to right, storing what you've read so far as you go.
-      </p>
-  
-      <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
-        <p class="font-semibold text-blue-900 mb-1">Analogy</p>
-        <p class="text-gray-800">
-          Imagine you're listening to a story one word at a time through a tiny earpiece. You don't get to rewind — you just try to remember as much as possible while the words keep coming.
+      <div class="section-card">
+        <h2 class="text-3xl font-bold mb-6">3. Recurrent Neural Networks (RNNs)</h2>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Language has order. The meaning of a sentence often depends on the words that came before — and that's where <strong>Recurrent Neural Networks (RNNs)</strong> come in.
+        </p>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          RNNs are designed to process text <em>one word at a time</em>, keeping a memory of what came before. Think of it like reading a sentence from left to right, storing what you've read so far as you go.
+        </p>
+    
+        <div class="border-l-4 border-blue-600 bg-blue-50 p-4 rounded mb-6">
+          <p class="font-semibold text-blue-900 mb-1">Analogy</p>
+          <p class="text-gray-800">
+            Imagine you're listening to a story one word at a time through a tiny earpiece. You don't get to rewind — you just try to remember as much as possible while the words keep coming.
+          </p>
+        </div>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          This works well for short sequences, but there's a problem: as the sentence gets longer, RNNs tend to <strong>forget the earlier words</strong>. The memory fades, and the model becomes less accurate over time.
+        </p>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          To fix this, researchers introduced two smarter versions of RNNs:
+        </p>
+    
+        <ul class="list-disc pl-6 text-gray-700 space-y-2 mb-6">
+          <li><strong>LSTM (Long Short-Term Memory)</strong>: adds a mechanism that helps the network remember important information for longer and decide what to forget.</li>
+          <li><strong>GRU (Gated Recurrent Unit)</strong>: a simpler, faster version of LSTM that still helps with long-term memory.</li>
+        </ul>
+    
+        <p class="text-lg text-gray-700 leading-relaxed">
+          These models significantly improved sequence learning, but they still processed words one by one — making them slow and limited in how much context they could handle at once. That led to the next breakthrough: the Transformer.
         </p>
       </div>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        This works well for short sequences, but there's a problem: as the sentence gets longer, RNNs tend to <strong>forget the earlier words</strong>. The memory fades, and the model becomes less accurate over time.
-      </p>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        To fix this, researchers introduced two smarter versions of RNNs:
-      </p>
-  
-      <ul class="list-disc pl-6 text-gray-700 space-y-2 mb-6">
-        <li><strong>LSTM (Long Short-Term Memory)</strong>: adds a mechanism that helps the network remember important information for longer and decide what to forget.</li>
-        <li><strong>GRU (Gated Recurrent Unit)</strong>: a simpler, faster version of LSTM that still helps with long-term memory.</li>
-      </ul>
-  
-      <p class="text-lg text-gray-700 leading-relaxed">
-        These models significantly improved sequence learning, but they still processed words one by one — making them slow and limited in how much context they could handle at once. That led to the next breakthrough: the Transformer.
-      </p>
     </div>
   </section>
 
   <!-- Section 4 -->
   <section id="section4" class="pb-8 px-6 bg-gray-50">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6">4. Transformers</h2>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        Transformers completely changed how machines understand language. Unlike RNNs that read one word at a time, Transformers look at the <strong>entire sentence all at once</strong>. This parallel processing makes them faster, more scalable, and more accurate — especially for long texts.
-      </p>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        The key idea behind Transformers is <strong>self-attention</strong>. This allows the model to decide which words in a sentence are most relevant to each other — regardless of their position.
-      </p>
-  
-      <div class="border-l-4 border-purple-600 bg-purple-50 p-4 rounded mb-6">
-        <p class="font-semibold text-purple-900 mb-1">Analogy</p>
-        <p class="text-gray-800">
-          Imagine reading an entire paragraph and being able to instantly highlight the most important words that explain the meaning of each sentence. That's what self-attention does — it lets the model "focus" on what matters.
+      <div class="section-card">
+        <h2 class="text-3xl font-bold mb-6">4. Transformers</h2>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Transformers completely changed how machines understand language. Unlike RNNs that read one word at a time, Transformers look at the <strong>entire sentence all at once</strong>. This parallel processing makes them faster, more scalable, and more accurate — especially for long texts.
+        </p>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          The key idea behind Transformers is <strong>self-attention</strong>. This allows the model to decide which words in a sentence are most relevant to each other — regardless of their position.
+        </p>
+    
+        <div class="border-l-4 border-purple-600 bg-purple-50 p-4 rounded mb-6">
+          <p class="font-semibold text-purple-900 mb-1">Analogy</p>
+          <p class="text-gray-800">
+            Imagine reading an entire paragraph and being able to instantly highlight the most important words that explain the meaning of each sentence. That's what self-attention does — it lets the model "focus" on what matters.
+          </p>
+        </div>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          This architecture is what powers models like BERT, GPT, and even me. It's why Transformers are now the foundation of nearly all modern language AI — from search engines to chatbots.
+        </p>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-0">
+          Transformers are not just faster — they're smarter. They can consider every word's relationship to every other word, all at once, which leads to richer understanding and more fluent generation.
         </p>
       </div>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        This architecture is what powers models like BERT, GPT, and even me. It's why Transformers are now the foundation of nearly all modern language AI — from search engines to chatbots.
-      </p>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-0">
-        Transformers are not just faster — they're smarter. They can consider every word's relationship to every other word, all at once, which leads to richer understanding and more fluent generation.
-      </p>
     </div>
   </section>
   <!-- Section 5 -->
   <section id="section5" class="pb-8 px-6 bg-gray-50">
     
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6">5. Large Language Models (LLMs)</h2>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        Large Language Models — or LLMs — are the next step in the evolution of language AI. They're built on the Transformer architecture, but scaled up dramatically: more data, more parameters, more compute.
-      </p>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        Models like GPT-3.5, GPT-4, Claude, and PaLM have been trained on vast amounts of text from books, websites, and conversations. Because of this, they can write essays, answer questions, generate code, create summaries, hold conversations, and much more.
-      </p>
-  
-      <div class="border-l-4 border-green-600 bg-green-50 p-4 rounded mb-6">
-        <p class="font-semibold text-green-900 mb-1">Analogy</p>
-        <p class="text-gray-800">
-          Imagine giving a student access to the entire internet and letting them read non-stop for years. They won't remember everything exactly, but they'll be able to guess what makes sense in almost any situation.
+      <div class="section-card">
+        <h2 class="text-3xl font-bold mb-6">5. Large Language Models (LLMs)</h2>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Large Language Models — or LLMs — are the next step in the evolution of language AI. They're built on the Transformer architecture, but scaled up dramatically: more data, more parameters, more compute.
+        </p>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          Models like GPT-3.5, GPT-4, Claude, and PaLM have been trained on vast amounts of text from books, websites, and conversations. Because of this, they can write essays, answer questions, generate code, create summaries, hold conversations, and much more.
+        </p>
+    
+        <div class="border-l-4 border-green-600 bg-green-50 p-4 rounded mb-6">
+          <p class="font-semibold text-green-900 mb-1">Analogy</p>
+          <p class="text-gray-800">
+            Imagine giving a student access to the entire internet and letting them read non-stop for years. They won't remember everything exactly, but they'll be able to guess what makes sense in almost any situation.
+          </p>
+        </div>
+    
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+          LLMs don't "think" or "understand" the way humans do — they generate the most statistically likely response based on the input they're given. But with enough data and scale, that statistical guesswork starts to feel surprisingly intelligent.
+        </p>
+    
+        <p class="text-lg text-gray-700 leading-relaxed">
+          As powerful as they are, LLMs have limitations: they can hallucinate facts, reflect biases in their training data, and can't access real-time information unless specifically designed to. But their capabilities today — and potential tomorrow — make them one of the most transformative technologies in AI.
         </p>
       </div>
-  
-      <p class="text-lg text-gray-700 leading-relaxed mb-4">
-        LLMs don't "think" or "understand" the way humans do — they generate the most statistically likely response based on the input they're given. But with enough data and scale, that statistical guesswork starts to feel surprisingly intelligent.
-      </p>
-  
-      <p class="text-lg text-gray-700 leading-relaxed">
-        As powerful as they are, LLMs have limitations: they can hallucinate facts, reflect biases in their training data, and can't access real-time information unless specifically designed to. But their capabilities today — and potential tomorrow — make them one of the most transformative technologies in AI.
-      </p>
     </div>
   </section>
 
@@ -440,62 +697,19 @@
   <section id="section6" class="pb-8 px-6 bg-gray-50">
     
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6">6. Resources</h2>
-      <ul class="list-disc pl-6 space-y-3 text-lg text-gray-700">
-        <li><a class="text-blue-600 underline" href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown – Deep Learning Playlist</a></li>
-        <li><a class="text-blue-600 underline" href="https://huggingface.co/learn">Hugging Face Learning Hub</a></li>
-        <li><a class="text-blue-600 underline" href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer by Jay Alammar</a></li>
-      </ul>
+      <div class="section-card">
+        <h2 class="text-3xl font-bold mb-6">6. Resources</h2>
+        <ul class="list-disc pl-6 space-y-3 text-lg text-gray-700">
+          <li><a class="text-blue-600 underline" href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown – Deep Learning Playlist</a></li>
+          <li><a class="text-blue-600 underline" href="https://huggingface.co/learn">Hugging Face Learning Hub</a></li>
+          <li><a class="text-blue-600 underline" href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer by Jay Alammar</a></li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <footer class="text-center text-sm text-gray-500 py-6 border-t mt-10">
     © 2025 Understanding LLMs. Built with care.
   </footer>
-
-  <script>
-    // Initialize ScrollReveal
-    ScrollReveal().reveal('.card', {
-      delay: 200,
-      distance: '20px',
-      duration: 1000,
-      easing: 'cubic-bezier(0.5, 0, 0, 1)',
-      origin: 'bottom'
-    });
-
-    // Progress bar
-    window.onscroll = function() {
-      let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-      let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      let scrolled = (winScroll / height) * 100;
-      document.getElementById('progressBar').style.width = scrolled + '%';
-    };
-
-    // Dark mode toggle
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark');
-      const lightIcon = document.querySelector('.light-icon');
-      const darkIcon = document.querySelector('.dark-icon');
-      lightIcon.classList.toggle('hidden');
-      darkIcon.classList.toggle('hidden');
-    }
-
-    // Initialize code highlighting
-    document.addEventListener('DOMContentLoaded', (event) => {
-      document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightBlock(block);
-      });
-    });
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
-  </script>
 </body>
 </html>
