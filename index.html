@@ -308,6 +308,17 @@
         color: #fff !important;
         border: none !important;
       }
+      .subscribe-input {
+        /* Ensure placeholder text is visible in dark mode */
+      }
+      .dark .subscribe-input::placeholder {
+        color: #a3a3a3 !important; /* Lighter grey for placeholder */
+      }
+      .dark .subscribe-input {
+        color: #f3f4f6 !important; /* Light text for input */
+        background-color: #23272f !important;
+        border-color: #374151 !important;
+      }
     </style>
   </head>
   <body class="text-gray-800">
@@ -339,26 +350,28 @@
       <div class="max-w-4xl mx-auto">
         <h1 class="hero-heading mb-2 text-2xl sm:text-3xl md:text-4xl">Understanding Large Language Models</h1>
         <p class="hero-subtitle mb-3 text-base sm:text-lg">An intuitive guide to how language models work — from text to tokens to Transformers</p>
-        <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-4 w-full max-w-3xl mx-auto mt-3">
-          <button id="likeBtn" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300 w-full sm:w-auto">
-            <span id="likeIcon" class="text-lg">♡</span>
-            <span id="likeText">Like</span>
-            <span id="likeCount" class="ml-1">0</span>
-          </button>
-          <button onclick="downloadPDF()" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300 w-full sm:w-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Download PDF
-          </button>
-          <form class="flex flex-col sm:flex-row gap-2 items-center w-full sm:w-auto" onsubmit="subscribeLLM(event)">
-            <input type="text" id="subscribeEmail" placeholder="Your email address" class="w-full sm:w-56 px-4 py-2.5 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400 transition" />
-            <button type="submit" class="px-5 py-2.5 rounded-md font-semibold text-white bg-gradient-to-r from-violet-500 to-indigo-600 shadow hover:scale-105 transition-transform w-full sm:w-auto">Subscribe</button>
+        <div class="flex flex-col items-center gap-4 w-full max-w-xl mx-auto mt-6">
+          <form class="flex flex-col sm:flex-row gap-2 items-center w-full" onsubmit="subscribeLLM(event)">
+            <input type="text" id="subscribeEmail" placeholder="Your email address" class="subscribe-input w-full sm:w-2/3 px-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-violet-400 transition" />
+            <button type="submit" class="px-5 py-2.5 rounded-md font-semibold text-white bg-gradient-to-r from-violet-500 to-indigo-600 shadow hover:scale-105 transition-transform w-full flex-grow">Subscribe</button>
           </form>
+          <div id="subscribeMsg" class="mt-2 text-green-600 font-medium hidden">You are subscribed!</div>
+          <div class="flex flex-col sm:flex-row gap-2 items-center w-full">
+            <button id="likeBtn" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300 w-full flex-grow">
+              <span id="likeIcon" class="text-lg">♡</span>
+              <span id="likeText">Like</span>
+              <span id="likeCount" class="ml-1">0</span>
+            </button>
+            <button onclick="downloadPDF()" class="px-5 py-2.5 rounded-md font-semibold text-white shadow-md flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-indigo-600 transition-transform duration-150 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-300 w-full flex-grow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download PDF
+            </button>
+          </div>
         </div>
-        <div id="subscribeMsg" class="mt-2 text-green-600 font-medium hidden">You are subscribed!</div>
       </div>
     </header>
     <section class="bg-gray-50 py-8 flex justify-center items-center">
