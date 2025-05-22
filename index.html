@@ -587,15 +587,44 @@
         origin: 'bottom'
       });
 
+      function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
       // Subscribe form handler
+  
+
       function subscribeLLM(event) {
         event.preventDefault();
-        document.getElementById('subscribeMsg').classList.remove('hidden');
-        setTimeout(() => {
-          document.getElementById('subscribeMsg').classList.add('hidden');
-        }, 3500);
-        event.target.reset();
+        const email = document.getElementById("subscribeEmail").value.trim();
+
+        if (!isValidEmail(email)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+
+        fetch("https://script.google.com/macros/s/AKfycbyQVPbt8k6_UPWEFA6uNkqk1E-YISwLdI5G5D43UHmzF15K4xKg5Efnmomqd36SR1Ob/exec", {
+          method: "POST",
+          body: new URLSearchParams({ email })
+        })
+        .then(res => res.text())
+        .then(data => {
+          document.getElementById("subscribeMsg").textContent = "Thanks for subscribing!";
+          document.getElementById("subscribeMsg").classList.remove("hidden");
+          setTimeout(() => {
+            document.getElementById("subscribeMsg").classList.add("hidden");
+          }, 4000);
+          event.target.reset();
+        })
+        .catch(err => {
+          console.error("Subscription error:", err);
+          document.getElementById("subscribeMsg").textContent = "Oops! Something went wrong.";
+          document.getElementById("subscribeMsg").classList.remove("hidden");
+          setTimeout(() => {
+            document.getElementById("subscribeMsg").classList.add("hidden");
+          }, 4000);
+        });
       }
+      
     </script>
   
   <!-- Section 3 -->
